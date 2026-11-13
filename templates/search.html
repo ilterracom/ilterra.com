@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{% block body_class %}inner search{% endblock %}
+{% block head %}<script src="/assets/js/search.js" defer></script>{% endblock %}
+{% block main %}
+{{ hero("Search", crumbs=[{"title": "Home", "url": "/"}], lead="Products, case studies and notes from ILTERRA.") }}
+<div class="container list-body">
+  <form class="search-form search-form-page" role="search" action="/search/" method="get">
+    <label class="visually-hidden" for="page-search">Search</label>
+    <input id="page-search" class="search-input" type="search" name="q" placeholder="Search..." autocomplete="off">
+    <button class="search-submit" type="submit" aria-label="Search">{{ icon("search") }}</button>
+  </form>
+  <p class="search-status" id="search-status" aria-live="polite"></p>
+  <div class="cards is-boxed cards-text" id="search-results" data-index="/search-index.json"></div>
+  <noscript><p>Search needs JavaScript. Browse <a href="/products/">products</a> or <a href="/category/knowledge-sharing/">knowledge sharing</a> instead.</p></noscript>
+</div>
+{% endblock %}

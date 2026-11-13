@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{% block body_class %}inner single type-{{ page.type }}{% endblock %}
+
+{% macro toc_list(tokens) -%}
+<ol>
+  {% for t in tokens %}
+  <li><a href="#{{ t.id }}">{{ t.name | striptags }}</a>{% if t.children %}{{ toc_list(t.children) }}{% endif %}</li>
+  {% endfor %}
+</ol>
+{%- endmacro %}
+
+{% block main %}
+{% set show_toc = toc_count >= 2 and page.meta.get("toc", true) %}
+{% set lead = page.summary if page.meta.get("summary") and not page.text.startswith(page.summary[:60].rstrip("…")) else "" %}
+{% set resources = children or siblings or page.meta.policy or parent %}
+
+{{ hero(page.title, crumbs=crumbs, eyebrow=eyebrow, lead=lead,
+        cover=page.cover, cover_fit=("contain" if page.type == "client" else "cover"),
+        date=page.date, updated=page.updated, reading=page.reading_time,
+        links=page.meta.get("links", [])) }}
+
+<div class="container page-body{% if show_toc or resources %} has-aside{% endif %}">
+  <article class="page-main">
+    {% if show_toc %}
+    <details class="toc-mobile">
+      <summary>On this page</summary>
+      <nav class="toc-nav" aria-label="On this page (mobile)">{{ toc_list(page.toc) }}</nav>
+    </details>
+    {% endif %}
+
+    <div class="prose">
+      {{ page.content }}
+    </div>
+
+    {% if children %}
+    <section class="docs-box">
+      <h2 class="box-title">Guides &amp; documents</h2>
+      <ul class="doc-list">
+        {% for c in children %}
+        <li><a href="{{ c.url }}">{{ icon("file") }}<span><strong>{{ c.title }}</strong>{% if c.summary %}<small>{{ c.summary | truncate_text(120) }}</small>{% endif %}</span>{{ icon("arrow-right", "icon go") }}</a></li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    {% if page.category_items or page.tag_items %}
+    <footer class="page-meta">
+      {% if page.tag_items %}
+      <ul class="tag-list" aria-label="Tags">
+        {% for t in page.tag_items %}<li><a href="{{ t.url }}">#{{ t.name }}</a></li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% if page.category_items %}
+      <p class="page-cats">Filed under
+        {% for c in page.category_items %}<a href="{{ c.url }}">{{ c.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+      </p>
+      {% endif %}
+    </footer>
+    {% endif %}
+  </article>
+
+  {% if show_toc or resources %}
+  <aside class="page-aside" aria-label="Page navigation">
+    <div class="aside-sticky">
+      {% if resources %}
+      <section class="aside-card">
+        {% if parent %}
+        <a class="aside-back" href="{{ parent.url }}">{{ icon("arrow-left") }} {{ parent.title }}</a>
+        {% endif %}
+        {% if children %}
+        <p class="aside-title">Guides</p>
+        <ul class="aside-links">
+          {% for c in children %}<li><a href="{{ c.url }}">{{ icon("file") }}{{ c.title }}</a></li>{% endfor %}
+        </ul>
+        {% elif siblings %}
+        <p class="aside-title">Also in {{ parent.title }}</p>
+        <ul class="aside-links">
+          {% for c in siblings %}<li><a href="{{ c.url }}">{{ icon("file") }}{{ c.title }}</a></li>{% endfor %}
+        </ul>
+        {% endif %}
+        {% if page.meta.policy %}
+        <a class="aside-policy" href="{{ page.meta.policy }}" target="_blank" rel="noopener">{{ icon("shield") }}Privacy &amp; legal</a>
+        {% endif %}
+      </section>
+      {% endif %}
+      {% if show_toc %}
+      <nav class="toc-nav" aria-label="On this page" data-scrollspy>
+        <p class="aside-title">On this page</p>
+        {{ toc_list(page.toc) }}
+      </nav>
+      {% endif %}
+    </div>
+  </aside>
+  {% endif %}
+</div>
+
+{% if related %}
+<section class="related">
+  <div class="container">
+    <h2 class="related-title">{{ {"product": "More products", "client": "Other case studies", "article": "More articles"}[page.type] }}</h2>
+    {% with items = related, boxed = true, show_cover = true %}{% include "partials/cards.html" %}{% endwith %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

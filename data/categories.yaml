@@ -1,0 +1,25 @@
+# Categories (kept from WordPress so /category/... URLs stay the same).
+# A page lists categories by path in its front matter, e.g.
+#   categories: [our-products, our-products/mobile]
+# A category page also lists everything from its sub-categories.
+
+- path: our-products
+  name: Products
+- path: our-products/mobile
+  name: Mobile
+- path: our-products/mobile/fincast
+  name: FinCast
+- path: our-products/web
+  name: Web
+- path: our-products/devops-our-products
+  name: DevOps
+- path: our-products/data-processing
+  name: Data Processing
+- path: knowledge-sharing
+  name: Knowledge Sharing
+- path: knowledge-sharing/devops
+  name: DevOps
+- path: knowledge-sharing/qa
+  name: QA
+- path: clients
+  name: Clients

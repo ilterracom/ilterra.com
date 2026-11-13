@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "dev"],
+      "port": 8484,
+      "autoPort": false
+    }
+  ]
+}

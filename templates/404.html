@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{# 404.html is served for missing pages at any depth; <base> keeps its relative links working. #}
+{% block head_base %}{% if site_url %}<base href="{{ site_url }}/">{% endif %}{% endblock %}
+{% block body_class %}inner not-found{% endblock %}
+{% block main %}
+{{ hero("Page not found", eyebrow="404", lead="The page you are looking for does not exist or has moved.") }}
+<div class="container list-body">
+  <nav class="chips" aria-label="Popular pages">
+    <a class="chip" href="/">Home</a>
+    <a class="chip" href="/products/">Products</a>
+    <a class="chip" href="/work-experience/">Experience</a>
+    <a class="chip" href="/category/knowledge-sharing/">Knowledge Sharing</a>
+    <a class="chip" href="/search/">Search</a>
+  </nav>
+</div>
+{% endblock %}

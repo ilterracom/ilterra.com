@@ -1,0 +1,46 @@
+{#
+  Page header used by every inner page: breadcrumbs, eyebrow label, title, lead,
+  meta line, action buttons and an optional cover image on the right.
+  Usage: {% from "partials/hero.html" import hero with context %}
+#}
+{% macro link_icon(kind) -%}
+  {{ icon({"appstore": "phone", "download": "download", "telegram": "send"}.get(kind, "external")) }}
+{%- endmacro %}
+
+{% macro hero(title, crumbs=[], eyebrow="", lead="", cover=None, cover_fit="cover", date=None, updated=None, reading=None, links=[], count=None) -%}
+<header class="page-hero{% if cover %} has-cover{% endif %}">
+  <div class="container hero-grid">
+    <div class="hero-main">
+      {% if crumbs %}
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          {% for c in crumbs %}<li><a href="{{ c.url }}">{{ c.title }}</a></li>{% endfor %}
+          <li aria-current="page">{{ title }}</li>
+        </ol>
+      </nav>
+      {% endif %}
+      {% if eyebrow %}<p class="eyebrow">{{ eyebrow }}</p>{% endif %}
+      <h1 class="hero-title">{{ title }}</h1>
+      {% if lead %}<p class="hero-lead">{{ lead }}</p>{% endif %}
+      {% if date or reading or count is not none %}
+      <ul class="hero-meta">
+        {% if date %}<li>{{ icon("calendar") }}<time datetime="{{ date.isoformat() }}">{{ date | date_long }}</time></li>{% endif %}
+        {% if updated and updated != date %}<li>{{ icon("refresh") }}Updated <time datetime="{{ updated.isoformat() }}">{{ updated | date_long }}</time></li>{% endif %}
+        {% if reading %}<li>{{ icon("clock") }}{{ reading }} min read</li>{% endif %}
+        {% if count is not none %}<li>{{ count }} item{{ "s" if count != 1 }}</li>{% endif %}
+      </ul>
+      {% endif %}
+      {% if links %}
+      <div class="hero-actions">
+        {% for l in links %}
+        <a class="btn {{ 'btn-primary' if loop.first else 'btn-ghost' }}" href="{{ l.url }}"{% if l.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ link_icon(l.kind) }}<span>{{ l.title }}</span></a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% if cover %}
+    <div class="hero-cover fit-{{ cover_fit }}"><img src="{{ cover }}" alt="" fetchpriority="high"></div>
+    {% endif %}
+  </div>
+</header>
+{%- endmacro %}

@@ -1,0 +1,2 @@
+# Only for helper scripts in tools/ (not needed to build the site)
+Pillow==11.3.0

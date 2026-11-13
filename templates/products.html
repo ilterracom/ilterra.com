@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{% block body_class %}inner archive products{% endblock %}
+{% block main %}
+{{ hero(page.title, crumbs=crumbs, eyebrow="ILTERRA", lead=page.text, count=(products | length)) }}
+<div class="container list-body">
+  {% if featured_products %}
+  <section class="list-group">
+    <h2 class="group-title">Current products</h2>
+    {% with items = featured_products, show_cover = true, boxed = true, wide = true %}{% include "partials/cards.html" %}{% endwith %}
+  </section>
+  {% endif %}
+
+  {% if other_products %}
+  <section class="list-group">
+    <h2 class="group-title">Earlier projects</h2>
+    {% with items = other_products, show_cover = true, boxed = true %}{% include "partials/cards.html" %}{% endwith %}
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

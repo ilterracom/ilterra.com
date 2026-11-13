@@ -1,0 +1,27 @@
+{#
+  Grid of content cards.
+    {% with items=..., show_cover=true, boxed=true %}{% include "partials/cards.html" %}{% endwith %}
+  boxed=true  -> bordered cards used on inner pages
+  boxed=false -> the original plain text cards of the home page ("Behind the Work")
+#}
+{% set labels = {"product": "Product", "client": "Case study", "article": "Article", "doc": "Guide"} %}
+<div class="cards{% if boxed %} is-boxed{% endif %}{% if not show_cover %} cards-text{% endif %}{% if wide %} is-wide{% endif %}">
+  {% for p in items %}
+  <article class="card">
+    {% if show_cover %}
+    <a class="card-media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+      {% if p.cover %}<img src="{{ p.cover }}" alt="" loading="lazy" decoding="async">{% else %}<span class="card-placeholder">{{ p.title[:1] }}</span>{% endif %}
+    </a>
+    {% endif %}
+    <div class="card-body">
+      {% if boxed %}
+      <p class="card-kicker">{{ labels.get(p.type, "") }}{% if p.date %}{% if labels.get(p.type) %} · {% endif %}<time datetime="{{ p.date.isoformat() }}">{{ p.date.year }}</time>{% endif %}</p>
+      {% endif %}
+      <h3 class="card-title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+      {% if not boxed and p.date %}<p class="card-date"><time datetime="{{ p.date.isoformat() }}">{{ p.date | date_short }}</time></p>{% endif %}
+      {% if p.summary %}<p class="card-excerpt">{{ p.summary }}</p>{% endif %}
+      <a class="card-more" href="{{ p.url }}" aria-label="Read more about {{ p.title }}">{% if boxed %}Read more {{ icon("arrow-right") }}{% else %}Read More »{% endif %}</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>

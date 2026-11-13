@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{% block body_class %}inner archive{% endblock %}
+{% block main %}
+{{ hero(heading, crumbs=crumbs, eyebrow=eyebrow, lead=lead, count=(items | length) + (experience_items | length)) }}
+<div class="container list-body">
+  {% if subcats %}
+  <nav class="chips" aria-label="Sub-categories">
+    {% for s in subcats %}<a class="chip" href="{{ s.url }}">{{ s.name }} <span>{{ s.pages | length }}</span></a>{% endfor %}
+  </nav>
+  {% endif %}
+
+  {% if experience_items %}
+  <section class="list-group">
+    <h2 class="group-title">Experience</h2>
+    <ul class="exp-mini">
+      {% for e in experience_items %}
+      <li><strong>{{ e.company }}</strong> — {{ e.role }} <span class="muted">{{ e.start_date | month_label }} – {{ e.end_date | month_label }}</span></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if items %}
+  {% with show_cover = true, boxed = true %}{% include "partials/cards.html" %}{% endwith %}
+  {% elif not experience_items %}
+  <p class="empty">Nothing here yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

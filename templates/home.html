@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block body_class %}home{% endblock %}
+{% block main %}
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-intro">{{ page.content }}</div>
+    <p class="hero-signature">{{ page.meta.signature | markdown_inline }}</p>
+  </div>
+  <div class="hero-photo">
+    <img src="{{ page.meta.avatar }}" alt="{{ page.meta.avatar_alt }}" width="1000" height="1000" fetchpriority="high">
+  </div>
+</section>
+
+{% if tag_cloud %}
+<section class="tags-band">
+  <h2 class="visually-hidden">Tags</h2>
+  {% include "partials/tag_cloud.html" %}
+</section>
+{% endif %}
+
+{% if experience %}
+<section class="section timeline-section">
+  <h2 class="section-title center"><a href="/work-experience/">Experience Timeline</a></h2>
+  {% include "partials/timeline.html" %}
+</section>
+{% endif %}
+
+{% set a = site.home.articles %}
+{% if a.enabled %}
+{% set cat = categories.get(a.category) %}
+{% if cat and cat.pages %}
+<section class="section articles-section">
+  <div class="container">
+    <h2 class="section-title"><a href="{{ cat.url }}">{{ a.title }}</a></h2>
+    {% with items = cat.pages[:a.limit], show_cover = false %}{% include "partials/cards.html" %}{% endwith %}
+  </div>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

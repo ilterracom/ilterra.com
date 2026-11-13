@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "partials/hero.html" import hero with context %}
+{% block body_class %}inner experience{% endblock %}
+{% block main %}
+{{ hero(page.title, crumbs=crumbs, eyebrow="Solution Architect & Engineer", lead=page.text) }}
+<div class="container list-body">
+  <section class="list-group">
+    <h2 class="group-title">Career timeline</h2>
+    <ol class="exp-list">
+      {% for e in experience | reverse %}
+      <li class="exp-item">
+        <div class="exp-when">
+          <time datetime="{{ e.start }}">{{ e.start_date | month_label }}</time> – {% if e.end_date %}<time datetime="{{ e.end }}">{{ e.end_date | month_label }}</time>{% else %}Present{% endif %}
+        </div>
+        <div class="exp-what">
+          <h3 class="exp-company">
+            {% if e.page %}<a href="{{ e.page }}">{{ e.company }}</a>{% elif e.url %}<a href="{{ e.url }}" target="_blank" rel="noopener">{{ e.company }}</a>{% else %}{{ e.company }}{% endif %}
+          </h3>
+          <p class="exp-role">{{ e.role }}</p>
+          {% if e.summary %}<p class="exp-summary">{{ e.summary }}</p>{% endif %}
+          {% if e.page %}<a class="exp-case" href="{{ e.page }}">Case study {{ icon("arrow-right") }}</a>{% endif %}
+          {% if e.tags %}
+          <ul class="tag-list">{% for name in e.tags %}<li><a href="/tag/{{ name | slugify }}/">#{{ name }}</a></li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  {% if clients %}
+  <section class="list-group">
+    <h2 class="group-title">Clients &amp; case studies</h2>
+    {% with items = clients, show_cover = true, boxed = true %}{% include "partials/cards.html" %}{% endwith %}
+  </section>
+  {% endif %}
+
+  {% if tag_cloud %}
+  <section class="list-group">
+    <h2 class="group-title">Skills &amp; technologies</h2>
+    <div class="tags-band tags-band-boxed">{% include "partials/tag_cloud.html" %}</div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

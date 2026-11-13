@@ -1,0 +1,99 @@
+# Site-wide settings. Links that start with "/" are site-root paths: the build
+# turns them into relative links, so never write the domain name here.
+
+name: ilTerra
+title: ilTerra – Nothing is impossible for us   # <title> of the home page
+title_suffix: " – ilTerra"                     # appended to other page titles
+tagline: Nothing is impossible for us
+description: >-
+  ILTERRA is the business of Yauhen Panimatchanka, Solution Architect & Engineer:
+  cloud, data and architecture for companies worldwide.
+lang: en
+logo: /assets/img/ilterra-logo.png
+og_image: /assets/img/avatar.jpg
+
+# Absolute links to these hosts inside the site are reported as errors by the build.
+own_domains: [ilterra.com, www.ilterra.com]
+
+social:
+  - name: LinkedIn
+    url: https://www.linkedin.com/in/yauhen-panimatchanka/
+    icon: linkedin
+  - name: Email
+    url: mailto:yauhen@ilterra.com
+    icon: envelope
+
+# Top menu. "children" makes a dropdown.
+menu:
+  - title: Home
+    url: /
+  - title: Experience
+    url: /work-experience/
+  - title: Products
+    url: /products/
+    children:
+      - title: Lumev
+        url: /products/lumev/
+      - title: Media Archive
+        url: /products/media-archive/
+      - title: Stealth Safe
+        url: /products/stealth-safe/
+      - title: Wieza
+        url: /products/wieza/
+      - title: All products
+        url: /products/
+  - title: Knowledge
+    url: /category/knowledge-sharing/
+  - title: Hire Me
+    url: mailto:yauhen@ilterra.com?subject=Hire%20me
+  - title: Start Your Project
+    url: mailto:info@ilterra.com?subject=New%20project
+  # Pages that existed only as "#" placeholders on the old site.
+  # Create content/services/index.md (or pricing) and uncomment to show them.
+  # - title: Services
+  #   url: /services/
+  # - title: Pricing
+  #   url: /pricing/
+
+footer_menu:
+  - title: Knowledge Sharing
+    url: /category/knowledge-sharing/
+    children:
+      - title: DevOps
+        url: /category/knowledge-sharing/devops/
+      - title: QA
+        url: /category/knowledge-sharing/qa/
+  - title: Privacy Policy
+    url: https://policies.ilterra.com/company/privacy/
+  - title: Payment Policy
+    url: https://policies.ilterra.com/company/payment/
+  - title: Service Policy (Terms & Conditions)
+    url: https://policies.ilterra.com/company/service/
+  - title: Provider Information
+    url: https://policies.ilterra.com/company/provider/
+
+company:
+  address: Polska, Poznań, 60-369
+  regon: "521961673"
+  nip: "7792539036"
+  email: info@ilterra.com
+  web_label: ilterra.com      # text only; the link always points to this site's root
+  bank:
+    account: PL93 1020 4900 0000 8702 3450 7680
+    beneficiary: ILTERRA ( YAUHEN PANIMATCHANKA )
+    bank_name: PKO Bank Polski
+    bic_label: Kod BIC PKO Banku Polskiego SA
+    bic: BPKOPLPW
+
+# Tag cloud on the home page: font sizes in pt (same scale as the old WordPress widget).
+tag_cloud:
+  smallest: 8
+  largest: 22
+  limit: 0          # 0 = show every tag
+
+home:
+  articles:
+    enabled: true   # "Behind the Work" block: latest posts from the category below
+    title: Behind the Work
+    category: knowledge-sharing
+    limit: 3

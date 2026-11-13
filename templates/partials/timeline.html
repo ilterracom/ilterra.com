@@ -1,0 +1,26 @@
+{#
+  Horizontal timeline (vertical on narrow screens). Every entry gets a fixed slot,
+  cards alternate above/below the line, and the track scrolls sideways when it no
+  longer fits, so adding entries never makes cards overlap.
+#}
+<div class="timeline" data-timeline>
+  <button class="tl-nav tl-prev" type="button" aria-label="Earlier" hidden>{{ icon("chevron-left") }}</button>
+  <div class="tl-viewport" tabindex="0" aria-label="Experience timeline, scroll sideways for more">
+    <ol class="tl-track" style="--n: {{ experience | length }}">
+      {% for e in experience %}
+      <li class="tl-item {{ 'tl-up' if loop.index0 is even else 'tl-down' }}">
+        <article class="tl-card">
+          <h3 class="tl-company">
+            {% if e.page %}<a href="{{ e.page }}">{{ e.company }}</a>{% elif e.url %}<a href="{{ e.url }}" target="_blank" rel="noopener">{{ e.company }}</a>{% else %}{{ e.company }}{% endif %}
+          </h3>
+          <p class="tl-role">{{ e.role }}</p>
+          <p class="tl-period"><time datetime="{{ e.start }}">{{ e.start_date | month_label }}</time> – {% if e.end_date %}<time datetime="{{ e.end }}">{{ e.end_date | month_label }}</time>{% else %}Present{% endif %}</p>
+        </article>
+        <span class="tl-node" aria-hidden="true"></span>
+        <span class="tl-year" aria-hidden="true">{{ e.start_date.year }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+  <button class="tl-nav tl-next" type="button" aria-label="Later" hidden>{{ icon("chevron-right") }}</button>
+</div>

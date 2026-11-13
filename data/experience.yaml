@@ -1,0 +1,57 @@
+# Experience timeline (home page and /work-experience/).
+# Order does not matter: entries are sorted by start date.
+#
+#   company: shown in bold
+#   role:    position
+#   start:   YYYY-MM
+#   end:     YYYY-MM, or leave empty / "present" for an ongoing role
+#   page:    optional link to a case study on this site, e.g. /mercedes/
+#   url:     optional external link (company website)
+#   tags:    optional; they are added to the tag cloud and the /tag/... pages
+#   summary: optional one-line description (shown on /work-experience/)
+
+- company: ScienceSoft.com
+  role: System Administrator
+  start: 2012-11
+  end: 2015-09
+
+- company: WP Engine
+  role: DevOps (Linux)
+  start: 2013-11
+  end: 2015-01
+
+- company: Wargaming.net
+  role: Build Engineer
+  start: 2015-10
+  end: 2017-05
+
+- company: Wargaming.net
+  role: Development Team Lead
+  start: 2017-05
+  end: 2018-05
+
+- company: SolbegSoft.com
+  role: DevOps Manager / CIO
+  start: 2018-06
+  end: 2019-11
+
+- company: EPAM Systems
+  role: Lead System Architect / Resource Manager
+  start: 2020-02
+  end: 2021-05
+
+- company: CustomerTimes.com
+  role: Enterprise Solutions Architect
+  start: 2021-05
+  end: 2022-08
+
+- company: Wave Neuroscience
+  role: Technical Lead
+  start: 2023-02
+  end: 2024-05
+
+- company: Mercedes-Benz & Daimler Trucks
+  role: Solution Engineer / Consultant
+  start: 2024-07
+  end: 2025-10
+  page: /mercedes/

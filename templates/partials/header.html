@@ -1,0 +1,37 @@
+{% macro menu_link(item, cls) -%}
+  {%- set active = (item.url == url) or (item.url != "/" and item.url.startswith("/") and url.startswith(item.url)) -%}
+  <a class="{{ cls }}{% if active %} is-active{% endif %}" href="{{ item.url }}"{% if active and item.url == url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+{%- endmacro %}
+<header class="site-header">
+  <div class="topbar">
+    <p class="topbar-slogan">{{ site.tagline }}</p>
+    <ul class="social" aria-label="Contacts">
+      {% for s in site.social %}
+      <li><a class="social-link" href="{{ s.url }}"{% if s.url.startswith('http') %} target="_blank" rel="noopener"{% endif %} aria-label="{{ s.name }}" title="{{ s.name }}">{{ icon(s.icon) }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="navbar">
+    <a class="logo" href="/"><img src="{{ site.logo }}" alt="{{ site.name }}" width="128" height="50"></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
+      {{ icon("menu", "icon icon-open") }}{{ icon("close", "icon icon-close") }}
+    </button>
+    <nav id="main-nav" class="main-nav" aria-label="Main">
+      <ul class="menu">
+        {% for item in site.menu %}
+        <li class="menu-item{% if item.children %} has-children{% endif %}">
+          {{ menu_link(item, "menu-link") }}
+          {% if item.children %}
+          <button class="submenu-toggle" type="button" aria-expanded="false" aria-label="Open {{ item.title }} menu">{{ icon("caret-down") }}</button>
+          <ul class="submenu">
+            {% for child in item.children %}
+            <li>{{ menu_link(child, "submenu-link") }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>

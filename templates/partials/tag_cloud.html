@@ -1,0 +1,8 @@
+{# Tag cloud: font size grows with the number of projects/clients/notes using the tag. #}
+<nav class="tag-cloud" aria-label="Tags">
+  <ul>
+    {% for t in tag_cloud %}
+    <li><a href="{{ t.url }}" style="font-size: {{ t.size }}pt" aria-label="{{ t.name }} ({{ t.count }} item{{ 's' if t.count != 1 }})">{{ t.name }}</a></li>
+    {% endfor %}
+  </ul>
+</nav>

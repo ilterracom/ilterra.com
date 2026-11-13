@@ -1,0 +1,44 @@
+<footer class="site-footer" id="contact">
+  <div class="footer-main">
+    <div class="footer-col">
+      <form class="search-form" role="search" action="/search/" method="get">
+        <label class="visually-hidden" for="footer-search">Search</label>
+        <input id="footer-search" class="search-input" type="search" name="q" placeholder="Search..." autocomplete="off">
+        <button class="search-submit" type="submit" aria-label="Search">{{ icon("search") }}</button>
+      </form>
+    </div>
+    <div class="footer-col footer-text">
+      {% set c = site.company %}
+      <p>
+        {{ c.address }}<br>
+        <span class="nowrap">REGON: {{ c.regon }}</span>
+        <span class="nowrap">NIP: {{ c.nip }}</span><br>
+        <span class="nowrap">Email: <a href="mailto:{{ c.email }}">{{ c.email }}</a></span>
+        <span class="nowrap">Web: <a href="/">{{ c.web_label }}</a></span>
+      </p>
+    </div>
+    <div class="footer-col footer-text">
+      <p>
+        ACCOUNT: {{ c.bank.account }}<br>
+        BENEFICIARY: {{ c.bank.beneficiary }}<br>
+        BANK OF BENEFICIARY: {{ c.bank.bank_name }}<br>
+        {{ c.bank.bic_label }}: {{ c.bank.bic }}
+      </p>
+    </div>
+  </div>
+  <nav class="footer-nav" aria-label="Footer">
+    <ul class="footer-menu">
+      {% for item in site.footer_menu %}
+      <li class="footer-item{% if item.children %} has-children{% endif %}">
+        <a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.title }}</a>
+        {% if item.children %}
+        {{ icon("caret-down", "icon caret") }}
+        <ul class="footer-submenu">
+          {% for child in item.children %}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</footer>
