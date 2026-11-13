@@ -1,9 +1,13 @@
+# Production = the "release" branch.
+#   push to release      -> build, check links, deploy to GitHub Pages
+#   push to main / PR    -> build and check links only (no deploy)
+# Requires Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
 name: Build and deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  pull_request:          # build + link check only, no deploy
+    branches: [release, main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -23,11 +27,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Gives the public URL of the Pages site (custom domain if one is set in
+      # Gives the public URL of the Pages site (the custom domain from
       # Settings -> Pages), used only for canonical links and sitemap.xml.
       - name: Configure Pages
         id: pages
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/release'
         uses: actions/configure-pages@v5
 
       - name: Build site
@@ -37,13 +41,13 @@ jobs:
         run: python build.py --strict
 
       - name: Upload artifact
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/release'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/release'
     needs: build
     runs-on: ubuntu-latest
     permissions:
