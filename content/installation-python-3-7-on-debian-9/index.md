@@ -12,6 +12,8 @@ tags:
 - python 3.7
 summary: Python is one of the most popular programming languages in the world. With its simple and easy to learn syntax Python is a great choice for beginners and experienced developers. Python is quite a versatile programming…
 cover: cover.jpg
+seo_title: "How to Install Python 3.7 on Debian 9 from Source"
+description: "Build Python 3.7 from source on Debian 9: install build dependencies, download the tarball, configure with optimizations, make altinstall and verify."
 ---
 
 Python is one of the most popular programming languages in the world. With its simple and easy to learn syntax Python is a great choice for beginners and experienced developers. Python is quite a versatile programming language, you can use it to do almost anything you want, write small scripts, build games, develop websites, create machine learning algorithms, analyze data and more. Python is also portable which means you can run the same Python script on different operating systems without any changes.

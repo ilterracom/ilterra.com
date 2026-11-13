@@ -39,6 +39,8 @@ tags:
 - Windows Server
 summary: 'Solution Architect & Engineer for Mercedes-Benz and Daimler Trucks: migration, customization and support of large-scale enterprise applications and IT infrastructure.'
 cover: cover.webp
+seo_title: "Mercedes-Benz & Daimler Trucks – Case Study"
+description: "Solution Architect & Engineer for Mercedes-Benz and Daimler Trucks: IBM Cognos migration, Icinga and Datadog monitoring, SAP load testing, Linux clusters."
 ---
 
 ## About the client

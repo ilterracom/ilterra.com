@@ -13,6 +13,10 @@ links:
 - title: Download for macOS
   url: https://drive.google.com/file/d/1pGG_wceZe97Bzj6BthE7Ca2_A29FmAmi
   kind: download
+seo_title: "Wieza – SSH Server and Access Manager for macOS"
+description: "Wieza is a macOS menu bar app with an embedded SSH server, admin dashboard and virtual SSH users: give a team access to one Mac without sharing passwords."
+os: "macOS"
+app_category: DeveloperApplication
 ---
 
 ## Turn Your Mac into a Managed Remote Access Workspace

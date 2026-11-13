@@ -4,6 +4,7 @@ date: '2026-09-17'
 type: doc
 parent: /products/lumev/
 summary: 'Lumev helps you turn a reflected-light reading from your phone into settings for a real film camera. This guide covers the complete workflow: build a kit, meter the scene, add important spot readings, choose an exposure…'
+description: "How to use Lumev: build a camera kit, meter the scene, add spot readings, choose a shutter and aperture pair and review the photo after development."
 ---
 
 Lumev helps you turn a reflected-light reading from your phone into settings for a real film camera. This guide covers the complete workflow: build a kit, meter the scene, add important spot readings, choose an exposure pair, and review the photograph after development.

@@ -925,3 +925,30 @@ button { font: inherit; }
 @media print {
   .site-header .topbar, .nav-toggle, .main-nav, .site-footer .footer-nav, .search-form, .tl-nav { display: none !important; }
 }
+
+/* ------------------------------------------------------------------ ads (inner pages only) */
+.ad { margin: 44px 0 0; text-align: center; }
+.ad-label {
+  display: block; margin-bottom: 8px;
+  font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #b3b8bf;
+}
+.ad ins.adsbygoogle { min-height: 90px; }
+.ad:has(ins[data-ad-status="unfilled"]) { display: none; }
+.ad-article_end { padding: 18px 0 20px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ad-sidebar { margin: 0; padding-top: 18px; border-top: 1px solid var(--line); }
+.ad-sidebar ins.adsbygoogle { width: 250px; min-height: 250px; margin: 0 auto; }
+.aside-sticky.with-ad { overflow: visible; max-height: none; }
+.aside-sticky.with-ad .toc-nav { max-height: calc(100vh - 430px); min-height: 140px; overflow-y: auto; scrollbar-width: thin; }
+.ad-preview-box {
+  display: grid; place-items: center; min-height: 120px; padding: 16px;
+  border: 2px dashed #e6cfc4; border-radius: 12px;
+  background: repeating-linear-gradient(135deg, #fdf8f6 0 10px, #fbf1ec 10px 20px);
+  color: #b98a76; font-size: 13px; line-height: 1.5;
+}
+.ad-preview-box small { color: #c9a796; }
+.ad-sidebar .ad-preview-box { min-height: 250px; }
+@media print { .ad { display: none !important; } }
+.ad-article_end + .page-meta { margin-top: 28px; padding-top: 0; border-top: 0; }
+/* the home signature is the page's h1 (keeps the original look) */
+h1.hero-signature { margin: 20px 0 0; font-weight: 400; line-height: 1.5; }
+.cards + .list-group { margin-top: 56px; }

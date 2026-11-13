@@ -16,6 +16,10 @@ links:
 - title: App Store
   url: https://apps.apple.com/pl/app/lumev/id6811614331
   kind: appstore
+seo_title: "Lumev – Film Light Meter App for iPhone"
+description: "Lumev turns your iPhone into a light meter for film photography: spot readings, exposure pairs for your real camera and lens, filters and roll review."
+os: "iOS"
+app_category: MultimediaApplication
 ---
 
 <div class="cols" markdown="1">

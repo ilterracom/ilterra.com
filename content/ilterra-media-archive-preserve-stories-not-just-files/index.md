@@ -18,6 +18,8 @@ links:
 - title: Visit Media Archive
   url: https://archive.ilterra.com
   kind: web
+os: "Web"
+app_category: MultimediaApplication
 ---
 
 ## Vision

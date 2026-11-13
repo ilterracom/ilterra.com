@@ -17,6 +17,7 @@ tags:
 - ML
 summary: AIDI is a progressive data type identification system based on machine learning. By default, AIDI is trained to identify basic data types (cities, phone numbers, email addresses, and so on), but as you use it, you…
 cover: cover.png
+app_category: BusinessApplication
 ---
 
 ## AIDI is a progressive data type identification system based on machine learning.

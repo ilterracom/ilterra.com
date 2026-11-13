@@ -1,23 +1,32 @@
 <!doctype html>
-{% set page_title = page.title if url == "/" and page.type is defined and page.type == "home" else page.title ~ site.title_suffix %}
 {% set description = (page.description if page.description is defined and page.description else site.description) %}
-<html lang="{{ page.lang if page.lang is defined and page.lang else site.lang }}">
+{% set og_title = (page.seo_title if page.seo_title is defined and page.seo_title else page.title) %}
+{% set lang = page.lang if page.lang is defined and page.lang else site.lang %}
+{% set is_article = page.type is defined and page.type in ("article", "doc", "client", "product") %}
+<html lang="{{ lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page_title }}</title>
-  <meta name="description" content="{{ description | truncate_text(300) }}">
-  {% if page.noindex is defined and page.noindex %}<meta name="robots" content="noindex">{% endif %}
+  {% include "partials/google_head.html" %}
+  <title>{{ head_title }}</title>
+  <meta name="description" content="{{ description | truncate_text(160) }}">
+  <meta name="author" content="{{ site.owner.name if site.owner else site.name }}">
+  {% if page.noindex is defined and page.noindex %}<meta name="robots" content="noindex">{% else %}<meta name="robots" content="index, follow, max-image-preview:large">{% endif %}
   {% block head_base %}{% endblock %}
   {% if site_url and not (page.noindex is defined and page.noindex) %}
   <link rel="canonical" href="{{ abs_url(url) }}">
   <meta property="og:url" content="{{ abs_url(url) }}">
   <meta property="og:image" content="{{ abs_url(page.cover if page.cover is defined and page.cover else site.og_image) }}">
   {% endif %}
-  <meta property="og:type" content="{{ 'website' if url == '/' else 'article' }}">
-  <meta property="og:site_name" content="{{ site.name }}">
-  <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:description" content="{{ description | truncate_text(300) }}">
+  <meta property="og:type" content="{{ 'article' if is_article else 'website' }}">
+  <meta property="og:site_name" content="{{ site.legal_name or site.name }}">
+  <meta property="og:locale" content="{{ 'ru_RU' if lang == 'ru' else 'en_US' }}">
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ description | truncate_text(200) }}">
+  {% if is_article and page.date %}
+  <meta property="article:published_time" content="{{ page.date.isoformat() }}">
+  {% if page.updated %}<meta property="article:modified_time" content="{{ page.updated.isoformat() }}">{% endif %}
+  {% endif %}
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
   <link rel="icon" href="/assets/img/favicon-192.png" sizes="192x192">
@@ -26,6 +35,7 @@
   <link rel="stylesheet" href="/assets/css/fonts.css">
   <link rel="stylesheet" href="/assets/css/site.css">
   <script src="/assets/js/site.js" defer></script>
+  {% if jsonld %}<script type="application/ld+json">{{ jsonld }}</script>{% endif %}
   {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">

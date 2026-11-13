@@ -9,6 +9,8 @@ tags:
 - php
 - wordpress
 summary: 'A lightweight, secure WordPress sign-in plugin: log in via Microsoft Entra ID (formerly Azure AD) using OpenID Connect.'
+os: "WordPress"
+app_category: SecurityApplication
 ---
 
 ## ilTerra SSO plugin for WordPress

@@ -13,6 +13,10 @@ weight: 20
 policy: https://policies.ilterra.com/webarchive/
 summary: A private media ecosystem — WebArchive for iPhone and ILTERRA MEDIA ARCHIVE for the web — for people who want to own, organize and understand their visual history.
 cover: webarch-bg.jpg
+seo_title: "Media Archive – Private Photo, Video and Document Archive"
+description: "WebArchive for iPhone and ILTERRA Media Archive for the web: one private ecosystem to own, organize and understand your photos, videos and documents."
+os: "iOS, Web"
+app_category: MultimediaApplication
 ---
 
 ## A private media ecosystem for people who want to own, organize, and understand their visual history

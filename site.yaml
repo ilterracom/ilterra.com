@@ -2,8 +2,9 @@
 # turns them into relative links, so never write the domain name here.
 
 name: ilTerra
-title: ilTerra – Nothing is impossible for us   # <title> of the home page
-title_suffix: " – ilTerra"                     # appended to other page titles
+legal_name: ILTERRA                             # used in structured data (schema.org)
+title: ilTerra – Nothing is impossible for us
+title_suffix: " – ilTerra"                     # appended to page titles while the result stays <= 60 chars
 tagline: Nothing is impossible for us
 description: >-
   ILTERRA is the business of Yauhen Panimatchanka, Solution Architect & Engineer:
@@ -72,8 +73,20 @@ footer_menu:
   - title: Provider Information
     url: https://policies.ilterra.com/company/provider/
 
+# The person behind the site (structured data for search engines: Person / ProfilePage).
+owner:
+  name: Yauhen Panimatchanka
+  job_title: Solution Architect & Engineer
+  image: /assets/img/avatar.jpg
+  same_as:
+    - https://www.linkedin.com/in/yauhen-panimatchanka/
+  knows_about: [Solution Architecture, DevOps, Cloud, Data Protection, Docker, iOS Development]
+
 company:
-  address: Polska, Poznań, 60-369
+  address: Polska, Poznań, 60-369   # shown in the footer
+  locality: Poznań                  # structured address for search engines
+  postal_code: "60-369"
+  country: PL
   regon: "521961673"
   nip: "7792539036"
   email: info@ilterra.com
@@ -90,6 +103,29 @@ tag_cloud:
   smallest: 8
   largest: 22
   limit: 0          # 0 = show every tag
+
+# Google Analytics + consent. Leave tag_id empty to switch analytics off.
+google:
+  tag_id: GT-55XZZVT        # Google tag of the GA4 property (same as on the old WordPress site)
+  consent_mode: true        # EEA/UK/CH visitors: no analytics/ads cookies until they accept
+  consent_banner: true      # Google's own GDPR banner (AdSense -> Privacy & messaging)
+
+# AdSense: manual ad units only. Keep "Auto ads" OFF for this site in AdSense,
+# otherwise Google adds its own blocks everywhere (including the home page).
+adsense:
+  client: ca-pub-9800010230612028
+  page_types: [article, product, doc]   # page types that show ads; front matter "ads: false" turns them off per page
+  # Ad units from AdSense -> Ads -> By ad unit. id = data-ad-slot; empty id = block not shown.
+  # format must match the unit type in AdSense: display | in-article | multiplex
+  slots:
+    sidebar:                # right column under "On this page", desktop only
+      id: "7545858347"      # AdSense unit "Боковой виджет" (Display)
+      format: display
+    article_end:            # after the article text, all screen sizes
+      id: "9856610966"      # AdSense unit "ilterra_near-TOC" (In-article)
+      format: in-article
+    # Not used on purpose: Multiplex "after-post-content" (2006041108) - a grid of ads
+    # right above "More articles" looks heavy. To try it, add a slot here and in page.html.
 
 home:
   articles:

@@ -17,6 +17,8 @@ links:
 - title: App Store
   url: https://apps.apple.com/pl/app/pioneer-trigger/id1640497829
   kind: appstore
+os: "iOS"
+app_category: SecurityApplication
 ---
 
 A mobile application for devices based on [iOS](/tag/ios/) operating systems that solves the problems of automated monitoring of the surrounding space.

@@ -1,0 +1,31 @@
+{#
+  Manual AdSense unit. Rendered only when the slot has an id in site.yaml;
+  in the dev server (docker compose up dev) an outline shows where it will appear.
+  display_format is used for "display" units: "rectangle" (sidebar) or "auto" (responsive).
+#}
+{% macro ad_unit(name, display_format="auto", cls="") -%}
+{% set cfg = site.adsense.slots.get(name) if site.adsense and site.adsense.slots else none %}
+{% if cfg and cfg.id %}
+<aside class="ad ad-{{ name }} ad-{{ cfg.format }} {{ cls }}" aria-label="Advertisement">
+  <span class="ad-label">Advertisement</span>
+  {% if cfg.format == "in-article" %}
+  <ins class="adsbygoogle" style="display:block; text-align:center;"
+       data-ad-layout="in-article" data-ad-format="fluid"
+       data-ad-client="{{ site.adsense.client }}" data-ad-slot="{{ cfg.id }}"></ins>
+  {% elif cfg.format == "multiplex" %}
+  <ins class="adsbygoogle" style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="{{ site.adsense.client }}" data-ad-slot="{{ cfg.id }}"></ins>
+  {% else %}
+  <ins class="adsbygoogle" style="display:block"
+       data-ad-client="{{ site.adsense.client }}" data-ad-slot="{{ cfg.id }}"
+       data-ad-format="{{ display_format }}"{% if display_format == "auto" %} data-full-width-responsive="true"{% endif %}></ins>
+  {% endif %}
+</aside>
+{% elif dev %}
+<aside class="ad ad-{{ name }} ad-preview {{ cls }}" aria-hidden="true">
+  <span class="ad-label">Advertisement</span>
+  <div class="ad-preview-box">Ad slot “{{ name }}”<br><small>set adsense.slots.{{ name }}.id in site.yaml</small></div>
+</aside>
+{% endif %}
+{%- endmacro %}

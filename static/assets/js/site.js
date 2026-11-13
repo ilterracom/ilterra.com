@@ -90,10 +90,25 @@
       var current = null;
       heads.forEach(function (h) { if (h.getBoundingClientRect().top < window.innerHeight * 0.35) current = h; });
       if (!current && visible.size) current = heads.find(function (h) { return visible.has(h); });
-      if (current) setActive(current.id);
+      if (current) {
+        setActive(current.id);
+        // keep the active entry visible when the list scrolls on its own
+        if (spy.scrollHeight > spy.clientHeight) {
+          var a = links[current.id].getBoundingClientRect(), box = spy.getBoundingClientRect();
+          if (a.top < box.top || a.bottom > box.bottom) spy.scrollTop += a.top - box.top - box.height / 3;
+        }
+      }
     }, { rootMargin: "0px 0px -55% 0px" });
     heads.forEach(function (h) { io.observe(h); });
   }
+
+  // ---- AdSense: request only units that are actually visible (the sidebar is hidden on phones)
+  document.querySelectorAll("ins.adsbygoogle").forEach(function (ins) {
+    if (ins.offsetParent === null) ins.closest(".ad").remove();
+  });
+  document.querySelectorAll("ins.adsbygoogle").forEach(function () {
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { /* blocked or not loaded */ }
+  });
 
   // ---- copy button on code blocks
   document.querySelectorAll(".prose pre").forEach(function (pre) {

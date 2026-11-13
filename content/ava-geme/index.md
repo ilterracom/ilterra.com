@@ -12,6 +12,8 @@ tags:
 - swift
 summary: The game is based on real events and the laws of space. By playing this game you are trying to defeat not only your opponent, but also fight against the obstacles of an uncontrollable galaxy. At first glance it will…
 cover: cover.jpg
+os: "iOS, tvOS"
+app_category: GameApplication
 ---
 
 The game is based on real events and the laws of space. By playing this game you are trying to defeat not only your opponent, but also fight against the obstacles of an uncontrollable galaxy. At first glance it will seem to you that everything is simple and logical, but you should not forget that not everything revolves around you and “All about you, isn’t it?”! Unexpected turns of events, a sense of power and might – this is what lies ahead for you!
@@ -33,11 +35,11 @@ The main task of the game is to destroy the enemy ship as quickly as possible or
 
 ## Game modes
 
-#### Local Game
+### Local Game
 
 In the local game mode, you and your opponent use the same device for the game (tablet or smartphone).
 
-#### Online Game (In Development)
+### Online Game (In Development)
 
 To play on the network, it is necessary that you and your opponent have the AVA application installed on a personal device (tablet, smartphone, TV).
 

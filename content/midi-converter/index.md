@@ -14,9 +14,13 @@ links:
 - title: Open MIDI Converter
   url: https://midi.ilterra.com
   kind: web
+seo_title: "MIDI Converter – Fix Tempo Issues in MIDI Files"
+description: "Web tool that rebuilds MIDI files with inconsistent tempo into one global tempo, so notes import correctly into Logic Pro, Ableton Live, Cubase and other DAWs."
+os: "Web"
+app_category: MultimediaApplication
 ---
 
-### Fix Tempo Issues in MIDI Files for Perfect DAW Compatibility
+## Fix Tempo Issues in MIDI Files for Perfect DAW Compatibility
 
 **Official website:** <https://midi.ilterra.com>
 

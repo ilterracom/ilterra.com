@@ -7,6 +7,8 @@ signature: |
   Yauhen Panimatchanka
   Founder of **ILTERRA**
   Solution Architect & Engineer
+seo_title: "ILTERRA – Solution Architect & Engineer in Poznań, Poland"
+description: "ILTERRA is the business of Yauhen Panimatchanka, Solution Architect & Engineer: cloud, data and architecture projects for companies worldwide."
 ---
 
 👋 Hi there, and welcome to **ILTERRA**.

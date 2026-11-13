@@ -20,6 +20,10 @@ links:
 - title: App Store
   url: https://apps.apple.com/us/app/stealth-safe/id6464050813
   kind: appstore
+seo_title: "StealthSafe – Encrypted Data Vault for iPhone and Docker"
+description: "StealthSafe keeps passwords, documents and operational secrets in encrypted briefcases on Apple devices, desktops and your own server (Docker edition)."
+os: "iOS, Docker"
+app_category: SecurityApplication
 ---
 
 Encrypted briefcases for private data, passwords, documents, and operational secrets – now across Apple devices, desktops, and servers.

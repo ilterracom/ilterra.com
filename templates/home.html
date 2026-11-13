@@ -4,10 +4,11 @@
 <section class="hero">
   <div class="hero-text">
     <div class="hero-intro">{{ page.content }}</div>
-    <p class="hero-signature">{{ page.meta.signature | markdown_inline }}</p>
+    <h1 class="hero-signature">{{ page.meta.signature | markdown_inline }}</h1>
   </div>
   <div class="hero-photo">
-    <img src="{{ page.meta.avatar }}" alt="{{ page.meta.avatar_alt }}" width="1000" height="1000" fetchpriority="high">
+    <img src="{{ page.meta.avatar }}" srcset="/assets/img/avatar-600.jpg 600w, {{ page.meta.avatar }} 1000w"
+         sizes="(max-width: 767px) 420px, 34vw" alt="{{ page.meta.avatar_alt }}" width="1000" height="1000" fetchpriority="high">
   </div>
 </section>
 

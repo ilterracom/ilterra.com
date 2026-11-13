@@ -16,6 +16,8 @@ links:
 - title: App Store
   url: https://apps.apple.com/us/app/simetria/id1517643256
   kind: appstore
+os: "iOS"
+app_category: DesignApplication
 ---
 
 This application should be interesting for people who are fond of drawing, and those who, in between work, take a pencil or pen in hand and begin to draw various figures on paper without thinking about their meaning at all.
@@ -35,7 +37,7 @@ Before moving on to a detailed description of the application, for those who are
 
 <div class="col" markdown="1">
 
-#### Current application functionality
+## Current application functionality
 
 - Drawing lines with the ability to set the degree of symmetry (the number of your strokes repeats around the center of symmetry)
 - You can apply a full-fledged palette of colors, as well as control transparency (perform color mixing) and stroke thickness for drawing
@@ -46,7 +48,7 @@ Before moving on to a detailed description of the application, for those who are
 
 <div class="col" markdown="1">
 
-#### Planned application functionality
+## Planned application functionality
 
 - Apple Pencil Touch Force Tracking (iPad)
 - Placing additional centers of symmetry for drawing complex mandalas

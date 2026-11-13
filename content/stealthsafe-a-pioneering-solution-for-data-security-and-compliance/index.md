@@ -19,6 +19,8 @@ links:
 - title: App Store
   url: https://apps.apple.com/us/app/stealth-safe/id6464050813
   kind: appstore
+os: "iOS"
+app_category: SecurityApplication
 ---
 
 **Category**:

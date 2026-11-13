@@ -11,6 +11,8 @@ tags:
 - docker
 summary: Docker is the most popular and widely used container runtime. It enables you to package and run your applications in isolated containers in a single server or cluster of Linux servers orchestrated by Kubernetes and…
 cover: cover.png
+seo_title: "How to Install Docker and Docker Compose on Debian 10"
+description: "Step-by-step guide to installing Docker CE and Docker Compose on Debian 10 Buster: dependencies, GPG key, Docker repository, installation and tests."
 ---
 
 Docker is the most popular and widely used container runtime. It enables you to package and run your applications in isolated containers in a single server or cluster of Linux servers orchestrated by Kubernetes and similar tools.

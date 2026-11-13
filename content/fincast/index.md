@@ -19,6 +19,8 @@ tags:
 policy: https://policies.ilterra.com/fincast/
 summary: FinCast is a set of applications for various devices whose task is to provide the user with information about the current exchange rates of the National Bank of the Republic of Belarus (at this moment, the project is…
 cover: cover.jpg
+os: "iOS, watchOS, tvOS"
+app_category: FinanceApplication
 ---
 
 FinCast is a set of applications for various devices whose task is to provide the user with information about the current exchange rates of the National Bank of the Republic of Belarus (at this moment, the project is focused primarily on the audience of users from the Republic of Belarus, however, if necessary, it can be updated for other countries), as well as forecasting short-term and long-term exchange rates for the main basket of currencies.

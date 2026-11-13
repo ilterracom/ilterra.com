@@ -17,9 +17,11 @@ links:
 - title: App Store
   url: https://apps.apple.com/by/app/fingerball-game/id1489815901
   kind: appstore
+os: "iOS"
+app_category: GameApplication
 ---
 
-### About Game
+## About Game
 
 The game is a modified version of the classic, well-known football. However, there are a number of differences in it:
 
@@ -28,13 +30,13 @@ The game is a modified version of the classic, well-known football. However, the
   - The score at the end of the game can be more than 50, since for each goal scored, from 1 to 3 points can be assigned depending on the speed with which the ball hit the goal
   - The time limit for one match is 1 minute and 30 seconds. After this time, the winner is the player with the most points. If both players scored the same equal number of points, then a tie is recognized.
 
-### Game modes
+## Game modes
 
-#### Local Game
+### Local Game
 
 In the local game mode, you and your opponent use the same device for the game (tablet or smartphone).
 
-#### Online Game (In Development)
+### Online Game (In Development)
 
 To play on the network it is necessary that you and your opponent have the FingerBall application installed on a personal device (tablet or smartphone).
 

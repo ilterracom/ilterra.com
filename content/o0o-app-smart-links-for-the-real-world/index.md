@@ -18,6 +18,8 @@ links:
 - title: Telegram bot
   url: https://t.me/urlcompressor_bot
   kind: telegram
+os: "Web, Telegram"
+app_category: BusinessApplication
 ---
 
 ## Vision

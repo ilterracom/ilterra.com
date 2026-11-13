@@ -34,6 +34,8 @@ tags:
 - Team Leadership
 summary: Novartis is one of the world’s leading pharmaceutical companies, headquartered in Switzerland, with operations in more than 150 countries.
 cover: cover.jpg
+seo_title: "Novartis – Data Protection and Compliance Case Study"
+description: "Technical Team Leader at Novartis: data masking strategies for GDPR and HIPAA, compliance audits and secure test data for development environments."
 ---
 
 ## About the client

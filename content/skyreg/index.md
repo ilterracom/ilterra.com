@@ -13,11 +13,13 @@ tags:
 policy: https://policies.ilterra.com/skyreg/
 summary: Identify cloud locations and other sky objects with SkyReg — for pilots, meteorologists and sky watchers. Point, snap and learn more about the sky.
 cover: cover.jpg
+os: "iOS"
+app_category: UtilitiesApplication
 ---
 
 Identify cloud locations and other sky objects with SkyReg! Perfect for pilots, meteorologists, and sky watchers. Point, snap, and learn more about the sky!
 
-### About
+## About
 
 SkyReg is a powerful app for identifying the locations of sky objects, such as clouds, using your smartphone’s camera. Ideal for pilots, meteorologists, and anyone interested in sky observation or weather control.
 

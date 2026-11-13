@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% from "partials/hero.html" import hero with context %}
+{% from "partials/ad.html" import ad_unit with context %}
 {% block body_class %}inner single type-{{ page.type }}{% endblock %}
+{% block head %}
+{% if ads_live %}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.adsense.client }}" crossorigin="anonymous"></script>{% endif %}
+{% endblock %}
 
 {% macro toc_list(tokens) -%}
 <ol>
@@ -14,13 +18,16 @@
 {% set show_toc = toc_count >= 2 and page.meta.get("toc", true) %}
 {% set lead = page.summary if page.meta.get("summary") and not page.text.startswith(page.summary[:60].rstrip("…")) else "" %}
 {% set resources = children or siblings or page.meta.policy or parent %}
+{% set sidebar_slot = site.adsense.slots.get("sidebar") if site.adsense else none %}
+{% set ad_side = show_ads and ((sidebar_slot and sidebar_slot.id) or dev) %}
+{% set has_aside = show_toc or resources or ad_side %}
 
 {{ hero(page.title, crumbs=crumbs, eyebrow=eyebrow, lead=lead,
         cover=page.cover, cover_fit=("contain" if page.type == "client" else "cover"),
         date=page.date, updated=page.updated, reading=page.reading_time,
         links=page.meta.get("links", [])) }}
 
-<div class="container page-body{% if show_toc or resources %} has-aside{% endif %}">
+<div class="container page-body{% if has_aside %} has-aside{% endif %}">
   <article class="page-main">
     {% if show_toc %}
     <details class="toc-mobile">
@@ -44,6 +51,8 @@
     </section>
     {% endif %}
 
+    {% if show_ads %}{{ ad_unit("article_end", "auto") }}{% endif %}
+
     {% if page.category_items or page.tag_items %}
     <footer class="page-meta">
       {% if page.tag_items %}
@@ -60,9 +69,9 @@
     {% endif %}
   </article>
 
-  {% if show_toc or resources %}
+  {% if has_aside %}
   <aside class="page-aside" aria-label="Page navigation">
-    <div class="aside-sticky">
+    <div class="aside-sticky{% if ad_side %} with-ad{% endif %}">
       {% if resources %}
       <section class="aside-card">
         {% if parent %}
@@ -90,6 +99,7 @@
         {{ toc_list(page.toc) }}
       </nav>
       {% endif %}
+      {% if ad_side %}{{ ad_unit("sidebar", "rectangle") }}{% endif %}
     </div>
   </aside>
   {% endif %}

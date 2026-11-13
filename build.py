@@ -142,6 +142,7 @@ class Page:
         self.cover = self.resolve(meta.get("cover"))
         self.summary = str(meta.get("summary", "") or "")
         self.description = str(meta.get("description", "") or self.summary)
+        self.seo_title = str(meta.get("seo_title", "") or "")
         self.text = ""
 
     def resolve(self, ref):
@@ -187,6 +188,7 @@ def render_markdown(page: Page):
     # lazy images, external links in a new tab
     out = re.sub(r"<img (?![^>]*\bloading=)", '<img loading="lazy" decoding="async" ', out)
     out = IMG_RE.sub(classify_image, out)
+    out = fill_alt_text(out, page.title)
     out = re.sub(r'<a href="(https?://[^"]+)"(?![^>]*\btarget=)', r'<a href="\1" target="_blank" rel="noopener"', out)
     out = out.replace("<table>", '<div class="table-wrap"><table>').replace("</table>", "</table></div>")
     page.content = Markup(out)
@@ -196,11 +198,47 @@ def render_markdown(page: Page):
     page.reading_time = max(1, round(page.words / 220))
     if not page.summary:
         page.summary = truncate(page.text, 200)
-    if not page.description:
-        page.description = page.summary
+    # meta description: explicit "description", else the summary, kept within ~160 chars
+    page.description = truncate(page.meta.get("description") or page.summary, 158)
 
 
 IMG_RE = re.compile(r"<img\b[^>]*>")
+ALT_TOKEN_RE = re.compile(r"<h[23][^>]*>(.*?)</h[23]>|<figure\b.*?</figure>|<img\b[^>]*>", re.S)
+
+
+def fill_alt_text(out: str, title: str) -> str:
+    """Give every content image a meaningful alt: its caption, else '<page> – <section heading>'."""
+    state = {"heading": ""}
+
+    def alt_for(tag: str, caption: str, link: str) -> str:
+        if "is-badge" in tag and "apps.apple.com" in link:
+            return f"Download {title} on the App Store"
+        if caption:
+            return caption
+        h = state["heading"]
+        return f"{title} – {h}" if h and h.lower() != title.lower() else title
+
+    def fix(tag: str, caption: str = "", link: str = "") -> str:
+        if re.search(r'\salt="[^"]+"', tag):
+            return tag
+        alt = html.escape(alt_for(tag, caption, link), quote=True)
+        if re.search(r'\salt=""', tag):
+            return re.sub(r'\salt=""', f' alt="{alt}"', tag, count=1)
+        return tag.replace("<img ", f'<img alt="{alt}" ', 1)
+
+    def token(m: re.Match) -> str:
+        text = m.group(0)
+        if m.group(1) is not None:  # heading
+            state["heading"] = strip_tags(m.group(1))
+            return text
+        if text.startswith("<figure"):
+            cap = re.search(r"<figcaption>(.*?)</figcaption>", text, re.S)
+            caption = strip_tags(cap.group(1)) if cap else ""
+            link = (re.search(r'<a href="([^"]+)"', text) or [None, ""])[1]
+            return IMG_RE.sub(lambda im: fix(im.group(0), caption, link), text)
+        return fix(text)
+
+    return ALT_TOKEN_RE.sub(token, out)
 
 
 def classify_image(m: re.Match) -> str:
@@ -241,6 +279,12 @@ class Site:
         self.out = Path(args.out).resolve()
         self.site_url = (args.site_url or os.environ.get("SITE_URL", "")).rstrip("/")
         self.config = yaml.safe_load(SITE_CONFIG.read_text(encoding="utf-8"))
+        # ad slots: accept "123" or {id: "123", format: in-article}; always expose {id, format}
+        ads_cfg = self.config.get("adsense") or {}
+        ads_cfg["slots"] = {
+            name: ({"id": str(v.get("id") or ""), "format": v.get("format") or "display"} if isinstance(v, dict)
+                   else {"id": str(v or ""), "format": "display"})
+            for name, v in (ads_cfg.get("slots") or {}).items()}
         self.categories_def = yaml.safe_load((DATA / "categories.yaml").read_text(encoding="utf-8")) or []
         self.experience = self.load_experience()
         self.pages = load_pages(args.drafts)
@@ -257,7 +301,7 @@ class Site:
         )
         self.env.filters.update(date_long=date_long, date_short=date_short, month_label=month_label,
                                 slugify=slugify, truncate_text=truncate, markdown_inline=markdown_inline)
-        self.env.globals.update(site=self.config, build_year=dt.date.today().year,
+        self.env.globals.update(site=self.config, build_year=dt.date.today().year, dev=bool(args.serve),
                                 icon=self.icon, abs_url=self.abs_url, site_url=self.site_url)
 
     # ---- data
@@ -391,6 +435,23 @@ class Site:
             trail.append({"title": sec[1], "url": sec[2]})
         return trail
 
+    @staticmethod
+    def list_description(intro: str, pages: list, extra: list | None = None) -> str:
+        names = [p.title for p in pages] + list(extra or [])
+        shown = ", ".join(names[:4]) + (" and more" if len(names) > 4 else "")
+        return truncate(f"{intro}: {shown}." if names else f"{intro}.", 158)
+
+    def related_tags(self, tag: dict, limit: int = 14) -> list[dict]:
+        """Tags that appear together with this one, most frequent first (internal linking between tag pages)."""
+        counts: dict[str, int] = {}
+        for p in tag["pages"]:
+            for n in p.tags:
+                s = slugify(n)
+                if s != tag["slug"] and s in self.tags:
+                    counts[s] = counts.get(s, 0) + 1
+        best = sorted(counts, key=lambda s: (-counts[s], -self.tags[s]["count"], self.tags[s]["name"].lower()))
+        return [self.tags[s] for s in best[:limit]]
+
     def eyebrow(self, page: Page) -> str:
         if page.meta.get("eyebrow"):
             return str(page.meta["eyebrow"])
@@ -411,9 +472,105 @@ class Site:
     # ---- rendering
 
     def render(self, template: str, url: str, **ctx) -> str:
+        page = ctx.get("page")
+        get = (lambda k, d="": page.get(k, d)) if isinstance(page, dict) else (lambda k, d="": getattr(page, k, d))
+        ctx.setdefault("head_title", self.head_title(get("title"), get("seo_title")))
+        ctx.setdefault("jsonld", self.jsonld(url, ctx))
         tpl = self.env.get_template(template)
         html_out = tpl.render(url=url, **self.coll, **ctx)
         return self.relativize(html_out, url)
+
+    def head_title(self, title: str, seo_title: str = "") -> str:
+        """<title>: SEO title if given; the brand suffix only while it stays within 60 characters."""
+        t = (seo_title or title or "").strip()
+        suffix = self.config.get("title_suffix", "")
+        return t + suffix if suffix and len(t + suffix) <= 60 else t
+
+    # ---- structured data (schema.org JSON-LD); needs absolute URLs, so only with SITE_URL
+
+    def jsonld(self, url: str, ctx: dict) -> Markup:
+        if not self.site_url:
+            return Markup("")
+        su, cfg = self.site_url, self.config
+        owner, comp = cfg.get("owner") or {}, cfg.get("company") or {}
+        org_id, person_id = su + "/#organization", su + "/#person"
+        org_ref = {"@type": "Organization", "@id": org_id, "name": cfg.get("legal_name", cfg.get("name"))}
+        author = {"@type": "Person", "@id": person_id, "name": owner.get("name"), "url": su + "/work-experience/"}
+        page = ctx.get("page")
+        is_page = isinstance(page, Page)
+        graph: list[dict] = []
+
+        if is_page and page.type == "home":
+            org = {**org_ref, "url": su + "/", "logo": self.abs_url(cfg.get("logo")), "email": comp.get("email"),
+                   "founder": {"@id": person_id},
+                   "sameAs": [s["url"] for s in cfg.get("social", []) if s["url"].startswith("http")]}
+            if comp.get("locality"):
+                org["address"] = {"@type": "PostalAddress", "addressLocality": comp.get("locality"),
+                                  "postalCode": comp.get("postal_code"), "addressCountry": comp.get("country")}
+            if comp.get("nip"):
+                org["taxID"] = comp["nip"]
+            graph += [org, self.person_ld(), {
+                "@type": "WebSite", "@id": su + "/#website", "url": su + "/", "name": cfg.get("legal_name", cfg.get("name")),
+                "publisher": {"@id": org_id}, "inLanguage": cfg.get("lang", "en"),
+                "potentialAction": {"@type": "SearchAction",
+                                    "target": {"@type": "EntryPoint", "urlTemplate": su + "/search/?q={search_term_string}"},
+                                    "query-input": "required name=search_term_string"}}]
+        else:
+            crumbs = ctx.get("crumbs") or []
+            name = ctx.get("heading") or (page.title if is_page else (page or {}).get("title"))
+            if crumbs:
+                items = crumbs + [{"title": name, "url": url}]
+                graph.append({"@type": "BreadcrumbList", "itemListElement": [
+                    {"@type": "ListItem", "position": i + 1, "name": c["title"], "item": su + c["url"]}
+                    for i, c in enumerate(items)]})
+            if is_page and page.type in ("article", "doc", "client"):
+                art = {"@type": "Article" if page.type == "client" else "TechArticle",
+                       "headline": page.title[:110], "description": page.description, "url": su + url,
+                       "mainEntityOfPage": su + url, "author": author, "publisher": org_ref,
+                       "inLanguage": page.lang or cfg.get("lang", "en")}
+                if page.date:
+                    art["datePublished"] = page.date.isoformat()
+                    art["dateModified"] = (page.updated or page.date).isoformat()
+                if page.cover:
+                    art["image"] = [self.abs_url(page.cover)]
+                if page.tags:
+                    art["keywords"] = ", ".join(page.tags)
+                graph.append(art)
+            elif is_page and page.type == "product":
+                app = {"@type": "SoftwareApplication", "name": page.title, "description": page.description,
+                       "url": su + url, "author": org_ref, "publisher": org_ref}
+                osys = page.meta.get("os") or ("iOS" if any(t.lower() in ("ios", "swift") for t in page.tags) else None)
+                if osys:
+                    app["operatingSystem"] = osys
+                if page.meta.get("app_category"):
+                    app["applicationCategory"] = page.meta["app_category"]
+                if page.cover:
+                    app["image"] = self.abs_url(page.cover)
+                if page.date:
+                    app["datePublished"] = page.date.isoformat()
+                for link in page.meta.get("links") or []:
+                    key = {"appstore": "installUrl", "download": "downloadUrl"}.get(link.get("kind"))
+                    if key and key not in app:
+                        app[key] = link["url"]
+                graph.append(app)
+            elif is_page and page.type == "experience":
+                graph.append({"@type": "ProfilePage", "url": su + url, "name": page.title, "mainEntity": self.person_ld()})
+            else:
+                graph.append({"@type": "CollectionPage", "url": su + url, "name": name,
+                              "isPartOf": {"@type": "WebSite", "@id": su + "/#website"}})
+        data = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
+        return Markup(data.replace("</", "<\\/"))
+
+    def person_ld(self) -> dict:
+        su, owner = self.site_url, self.config.get("owner") or {}
+        p = {"@type": "Person", "@id": su + "/#person", "name": owner.get("name"), "jobTitle": owner.get("job_title"),
+             "url": su + "/work-experience/", "worksFor": {"@id": su + "/#organization"},
+             "sameAs": owner.get("same_as") or []}
+        if owner.get("image"):
+            p["image"] = self.abs_url(owner["image"])
+        if owner.get("knows_about"):
+            p["knowsAbout"] = owner["knows_about"]
+        return p
 
     ATTR_RE = re.compile(r'(\s(?:href|src|action|poster|data-[\w-]+)=)(["\'])(/(?!/)[^"\']*)\2')
     SRCSET_RE = re.compile(r'(\ssrcset=)(["\'])([^"\']*)\2')
@@ -445,9 +602,34 @@ class Site:
 
     def build(self):
         start = time.time()
-        if self.out.exists():
-            shutil.rmtree(self.out)
+        # Build into a private temp folder and swap it in at the end: the dev server never serves
+        # a half-built site, and two builds running at once (dev server + manual build) don't collide.
+        final = self.final_out = self.out
+        self.out = final.parent / f".{final.name}.tmp-{os.getpid()}-{time.time_ns()}"
         self.out.mkdir(parents=True)
+        try:
+            self._build_into_out(start)
+        except BaseException:
+            shutil.rmtree(self.out, ignore_errors=True)
+            self.out = final
+            raise
+        self.swap_into(final)
+
+    def swap_into(self, final: Path):
+        tmp, old = self.out, final.parent / f".{final.name}.old-{os.getpid()}-{time.time_ns()}"
+        for _ in range(5):
+            try:
+                if final.exists():
+                    os.rename(final, old)
+                os.rename(tmp, final)
+                break
+            except (FileNotFoundError, OSError):
+                time.sleep(0.2)  # another build swapped at the same moment; try again
+        shutil.rmtree(old, ignore_errors=True)
+        shutil.rmtree(tmp, ignore_errors=True)
+        self.out = final
+
+    def _build_into_out(self, start: float):
         shutil.copytree(STATIC, self.out, dirs_exist_ok=True)
         for f in CONTENT.rglob("*"):
             if f.is_file() and f.suffix != ".md" and not f.name.startswith("."):
@@ -466,7 +648,12 @@ class Site:
                 "home": "home.html", "section": "products.html", "experience": "experience.html",
             }.get(p.type, "page.html")
             parent = self.by_url.get(p.meta.get("parent", ""))
+            ads = self.config.get("adsense") or {}
+            show_ads = (bool(ads.get("client")) and p.type in (ads.get("page_types") or [])
+                        and p.meta.get("ads", True) is not False)
             ctx = {"page": p, "children": self.children_of(p), "parent": parent,
+                   "show_ads": show_ads,
+                   "ads_live": show_ads and any(s["id"] for s in (ads.get("slots") or {}).values()),
                    "siblings": [s for s in self.children_of(parent) if s is not p] if parent else [],
                    "toc_count": toc_count(p.toc),
                    "crumbs": self.breadcrumbs(p), "eyebrow": self.eyebrow(p), "related": self.related(p)}
@@ -480,17 +667,24 @@ class Site:
                 for a in ("/".join(parts[:i]) for i in range(1, len(parts))) if a in self.categories]
             subcats = [s for s in self.categories.values()
                        if s["path"].startswith(c["path"] + "/") and s["path"].count("/") == c["path"].count("/") + 1]
-            desc = c.get("description") or f"{c['name']}: {len(c['pages'])} item{'s' if len(c['pages']) != 1 else ''}."
-            fake = {"title": c["name"], "description": desc, "url": c["url"]}
+            # "DevOps – Products" vs "DevOps – Knowledge Sharing": unique titles for same-named categories
+            trail = [x["title"] for x in crumbs[1:]]
+            seo_title = " – ".join([c["name"]] + list(reversed(trail)))
+            kind = {"our-products": "Products", "knowledge-sharing": "Articles", "clients": "Client case studies"}.get(parts[0], "Pages")
+            desc = c.get("description") or self.list_description(f"{kind} by ILTERRA in the {c['name']} category", c["pages"])
+            fake = {"title": c["name"], "seo_title": seo_title, "description": desc, "url": c["url"]}
             self.write(c["url"], self.render("list.html", c["url"], page=fake, items=c["pages"], heading=c["name"],
-                                             eyebrow="Category", crumbs=crumbs, subcats=subcats,
+                                             eyebrow="Category", crumbs=crumbs, subcats=subcats, related_tags=[],
                                              lead=c.get("description", ""), experience_items=[]))
             urls.append((c["url"], None))
         for t in self.tags.values():
-            fake = {"title": f"Tag: {t['name']}", "description": f"Projects, clients and notes tagged {t['name']}.", "url": t["url"]}
+            desc = self.list_description(f"ILTERRA projects, case studies and articles about {t['name']}",
+                                         t["pages"], [e["company"] for e in t["experience"]])
+            fake = {"title": t["name"], "seo_title": f"{t['name']} – Projects and Articles", "description": desc, "url": t["url"]}
             self.write(t["url"], self.render("list.html", t["url"], page=fake, items=t["pages"], heading=t["name"],
                                              eyebrow="Tag", crumbs=[{"title": "Home", "url": "/"}], subcats=[],
-                                             lead=f"Projects, clients and notes tagged “{t['name']}”.",
+                                             related_tags=self.related_tags(t),
+                                             lead=f"Projects, client case studies and articles about {t['name']}.",
                                              experience_items=t["experience"]))
             urls.append((t["url"], None))
 
@@ -502,7 +696,7 @@ class Site:
         self.check_links()
         took = time.time() - start
         n_html = sum(1 for _ in self.out.rglob("*.html"))
-        print(f"Built {n_html} HTML files into {self.out.relative_to(ROOT) if self.out.is_relative_to(ROOT) else self.out} in {took:.2f}s"
+        print(f"Built {n_html} HTML files into {self.final_out.relative_to(ROOT) if self.final_out.is_relative_to(ROOT) else self.final_out} in {took:.2f}s"
               + (f" (site URL {self.site_url})" if self.site_url else " (no SITE_URL: canonical/sitemap skipped)"))
         for w in self.warnings:
             print("  warning:", w)

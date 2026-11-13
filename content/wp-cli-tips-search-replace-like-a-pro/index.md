@@ -10,6 +10,8 @@ tags:
 - php
 - wordpress
 summary: 'If you run a WordPress website or manage multiple WordPress instances, sooner or later you’ll face a classic problem: You move your site from an IP-based environment or staging domain to a real domain — and suddenly…'
+seo_title: "WP-CLI search-replace: Move WordPress to a New Domain"
+description: "Moved WordPress from an IP or staging host to a real domain? Install WP-CLI and run a safe search-replace to fix internal links and media URLs in the database."
 ---
 
 If you run a WordPress website or manage multiple WordPress instances, sooner or later you’ll face a classic problem:
