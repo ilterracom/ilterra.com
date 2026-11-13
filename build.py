@@ -541,6 +541,8 @@ class Site:
             if f.name == "404.html" and f.parent == self.out:
                 continue  # served from any depth; uses <base> when SITE_URL is known
             text = f.read_text(encoding="utf-8")
+            # canonical URLs and <base> must be absolute by definition: not part of the check
+            text = re.sub(r'<link rel="canonical"[^>]*>|<base\b[^>]*>', "", text)
             for link in self.LINK_RE.findall(text):
                 link = html.unescape(link)
                 low = link.lower()
